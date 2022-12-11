@@ -86,15 +86,15 @@ source_group("Fuzzer Files" FILES "${FUZZER_SOURCES}")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-add_library(juice SHARED ${LIBJUICE_SOURCES})
-set_target_properties(juice PROPERTIES VERSION ${PROJECT_VERSION})
-target_include_directories(juice PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
-target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/juice)
-target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_compile_definitions(juice PRIVATE $<$<CONFIG:Release>:RELEASE=1>)
-target_link_libraries(juice PRIVATE Threads::Threads)
+#add_library(juice SHARED ${LIBJUICE_SOURCES})
+#set_target_properties(juice PROPERTIES VERSION ${PROJECT_VERSION})
+#target_include_directories(juice PUBLIC
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#    $<INSTALL_INTERFACE:include>)
+#target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/juice)
+#target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+#target_compile_definitions(juice PRIVATE $<$<CONFIG:Release>:RELEASE=1>)
+#target_link_libraries(juice PRIVATE Threads::Threads)
 
 add_library(juice-static STATIC EXCLUDE_FROM_ALL ${LIBJUICE_SOURCES})
 set_target_properties(juice-static PROPERTIES VERSION ${PROJECT_VERSION})
@@ -108,9 +108,9 @@ target_compile_definitions(juice-static PUBLIC JUICE_STATIC)
 target_link_libraries(juice-static PRIVATE Threads::Threads)
 
 if(WIN32)
-	target_link_libraries(juice PRIVATE
-		ws2_32 # winsock2
-		bcrypt)
+#	target_link_libraries(juice PRIVATE
+#		ws2_32 # winsock2
+#		bcrypt)
 	target_link_libraries(juice-static PRIVATE
 		ws2_32 # winsock2
 		bcrypt)
@@ -118,123 +118,123 @@ endif()
 
 if (USE_NETTLE)
 	find_package(Nettle REQUIRED)
-    target_compile_definitions(juice PRIVATE USE_NETTLE=1)
-    target_link_libraries(juice PRIVATE Nettle::Nettle)
+#    target_compile_definitions(juice PRIVATE USE_NETTLE=1)
+#    target_link_libraries(juice PRIVATE Nettle::Nettle)
     target_compile_definitions(juice-static PRIVATE USE_NETTLE=1)
     target_link_libraries(juice-static PRIVATE Nettle::Nettle)
 else()
-    target_compile_definitions(juice PRIVATE USE_NETTLE=0)
+#    target_compile_definitions(juice PRIVATE USE_NETTLE=0)
     target_compile_definitions(juice-static PRIVATE USE_NETTLE=0)
 endif()
 
 if (NO_SERVER)
-	target_compile_definitions(juice PRIVATE NO_SERVER)
+#	target_compile_definitions(juice PRIVATE NO_SERVER)
 	target_compile_definitions(juice-static PRIVATE NO_SERVER)
 endif()
 
 if(APPLE)
 	# This seems to be necessary on MacOS
-	target_include_directories(juice PRIVATE /usr/local/include)
+#	target_include_directories(juice PRIVATE /usr/local/include)
 	target_include_directories(juice-static PRIVATE /usr/local/include)
 endif()
 
-set_target_properties(juice PROPERTIES EXPORT_NAME LibJuice)
-add_library(LibJuice::LibJuice ALIAS juice)
+#set_target_properties(juice PROPERTIES EXPORT_NAME LibJuice)
+#add_library(LibJuice::LibJuice ALIAS juice)
 
 set_target_properties(juice-static PROPERTIES EXPORT_NAME LibJuiceStatic)
 add_library(LibJuice::LibJuiceStatic ALIAS juice-static)
 
-install(TARGETS juice EXPORT LibJuiceTargets
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
-)
-
-install(FILES ${LIBJUICE_HEADERS} DESTINATION include/juice)
-
-# Export Targets
-install(
-	EXPORT LibJuiceTargets
-	FILE LibJuiceTargets.cmake
-	NAMESPACE LibJuice::
-	DESTINATION lib/cmake/LibJuice
-)
-
-# Export config
-install(
-        FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/LibJuiceConfig.cmake
-        DESTINATION lib/cmake/LibJuice
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    ${CMAKE_BINARY_DIR}/LibJuiceConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion)
-install(FILES ${CMAKE_BINARY_DIR}/LibJuiceConfigVersion.cmake
-    DESTINATION lib/cmake/LibJuice)
-
-if(NOT NO_EXPORT_HEADER AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.12")
-	include(GenerateExportHeader)
-	generate_export_header(juice
-		EXPORT_MACRO_NAME JUICE_EXPORT
-		NO_EXPORT_MACRO_NAME JUICE_NO_EXPORT
-		DEPRECATED_MACRO_NAME JUICE_DEPRECATED
-		STATIC_DEFINE JUICE_STATIC)
-	target_include_directories(juice PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
-	target_compile_definitions(juice PUBLIC -DJUICE_HAS_EXPORT_HEADER)
-	set_target_properties(juice PROPERTIES C_VISIBILITY_PRESET hidden)
-	install(FILES ${PROJECT_BINARY_DIR}/juice_export.h DESTINATION include/juice)
-else()
-	target_compile_definitions(juice PRIVATE JUICE_EXPORTS)
-	target_compile_definitions(juice-static PRIVATE JUICE_EXPORTS)
-endif()
+#install(TARGETS juice EXPORT LibJuiceTargets
+#	RUNTIME DESTINATION bin
+#	LIBRARY DESTINATION lib
+#	ARCHIVE DESTINATION lib
+#)
+#
+#install(FILES ${LIBJUICE_HEADERS} DESTINATION include/juice)
+#
+## Export Targets
+#install(
+#	EXPORT LibJuiceTargets
+#	FILE LibJuiceTargets.cmake
+#	NAMESPACE LibJuice::
+#	DESTINATION lib/cmake/LibJuice
+#)
+#
+## Export config
+#install(
+#        FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/LibJuiceConfig.cmake
+#        DESTINATION lib/cmake/LibJuice
+#)
+#
+#include(CMakePackageConfigHelpers)
+#write_basic_package_version_file(
+#    ${CMAKE_BINARY_DIR}/LibJuiceConfigVersion.cmake
+#    VERSION ${PROJECT_VERSION}
+#    COMPATIBILITY SameMajorVersion)
+#install(FILES ${CMAKE_BINARY_DIR}/LibJuiceConfigVersion.cmake
+#    DESTINATION lib/cmake/LibJuice)
+#
+#if(NOT NO_EXPORT_HEADER AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.12")
+#	include(GenerateExportHeader)
+#	generate_export_header(juice
+#		EXPORT_MACRO_NAME JUICE_EXPORT
+#		NO_EXPORT_MACRO_NAME JUICE_NO_EXPORT
+#		DEPRECATED_MACRO_NAME JUICE_DEPRECATED
+#		STATIC_DEFINE JUICE_STATIC)
+#	target_include_directories(juice PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+#	target_compile_definitions(juice PUBLIC -DJUICE_HAS_EXPORT_HEADER)
+#	set_target_properties(juice PROPERTIES C_VISIBILITY_PRESET hidden)
+#	install(FILES ${PROJECT_BINARY_DIR}/juice_export.h DESTINATION include/juice)
+#else()
+#	target_compile_definitions(juice PRIVATE JUICE_EXPORTS)
+#	target_compile_definitions(juice-static PRIVATE JUICE_EXPORTS)
+#endif()
 
 if(NOT MSVC)
-	target_compile_options(juice PRIVATE -Wall -Wextra)
+#	target_compile_options(juice PRIVATE -Wall -Wextra)
 	target_compile_options(juice-static PRIVATE -Wall -Wextra)
 endif()
 
 if(WARNINGS_AS_ERRORS)
 	if(MSVC)
-		target_compile_options(juice PRIVATE /WX)
+#		target_compile_options(juice PRIVATE /WX)
 		target_compile_options(juice-static PRIVATE /WX)
 	else()
-		target_compile_options(juice PRIVATE -Werror)
+#		target_compile_options(juice PRIVATE -Werror)
 		target_compile_options(juice-static PRIVATE -Werror)
 	endif()
 endif()
 
-if(ENABLE_LOCALHOST_ADDRESS)
-	target_compile_definitions(juice PRIVATE JUICE_ENABLE_LOCALHOST_ADDRESS=1)
-endif()
-
-if(ENABLE_LOCAL_ADDRESS_TRANSLATION)
-	target_compile_definitions(juice PRIVATE JUICE_ENABLE_LOCAL_ADDRESS_TRANSLATION=1)
-endif()
-
-# Tests
-if(NOT NO_TESTS)
-	add_executable(juice-tests ${TESTS_SOURCES})
-	target_include_directories(juice-tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-	target_include_directories(juice-tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/juice)
-
-	set_target_properties(juice-tests PROPERTIES
-		VERSION ${PROJECT_VERSION}
-		OUTPUT_NAME tests)
-
-	set_target_properties(juice-tests PROPERTIES
-		XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER com.github.paullouisageneau.libjuice.tests)
-
-	target_link_libraries(juice-tests juice Threads::Threads)
-endif()
-
-# Fuzzer
-if(FUZZER)
-	add_executable(stun-fuzzer ${FUZZER_SOURCES})
-	target_include_directories(stun-fuzzer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-	target_include_directories(stun-fuzzer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/juice)
-
-	set_target_properties(stun-fuzzer PROPERTIES OUTPUT_NAME fuzzer)
-	target_link_libraries(stun-fuzzer juice-static ${LIB_FUZZING_ENGINE})
-endif()
+#if(ENABLE_LOCALHOST_ADDRESS)
+#	target_compile_definitions(juice PRIVATE JUICE_ENABLE_LOCALHOST_ADDRESS=1)
+#endif()
+#
+#if(ENABLE_LOCAL_ADDRESS_TRANSLATION)
+#	target_compile_definitions(juice PRIVATE JUICE_ENABLE_LOCAL_ADDRESS_TRANSLATION=1)
+#endif()
+#
+## Tests
+#if(NOT NO_TESTS)
+#	add_executable(juice-tests ${TESTS_SOURCES})
+#	target_include_directories(juice-tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+#	target_include_directories(juice-tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/juice)
+#
+#	set_target_properties(juice-tests PROPERTIES
+#		VERSION ${PROJECT_VERSION}
+#		OUTPUT_NAME tests)
+#
+#	set_target_properties(juice-tests PROPERTIES
+#		XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER com.github.paullouisageneau.libjuice.tests)
+#
+#	target_link_libraries(juice-tests juice Threads::Threads)
+#endif()
+#
+## Fuzzer
+#if(FUZZER)
+#	add_executable(stun-fuzzer ${FUZZER_SOURCES})
+#	target_include_directories(stun-fuzzer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+#	target_include_directories(stun-fuzzer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/juice)
+#
+#	set_target_properties(stun-fuzzer PROPERTIES OUTPUT_NAME fuzzer)
+#	target_link_libraries(stun-fuzzer juice-static ${LIB_FUZZING_ENGINE})
+#endif()
